@@ -12,7 +12,7 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import { env } from './config/env.js';
-import { logger } from './logs/logger.js';
+import { logger } from './config/logging.js';
 import { registerRoutes } from './routes/index.js';
 import { requestContextHook } from './middlewares/request-context.js';
 import { securityHeaders } from './middlewares/security-headers.js';
