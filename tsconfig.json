@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "allowImportingTsExtensions": true,
+    "moduleSuffixes": [".js", ".ts", ""],
+    "rootDir": "./",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": true,
+    "types": ["node", "jest"],
+    "sourceMap": true
+  },
+  "include": ["src", "tests", "jest.config.ts", "jest.e2e.config.ts", "playwright.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

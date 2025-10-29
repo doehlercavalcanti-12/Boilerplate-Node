@@ -1,0 +1,89 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Connection pool guidelines:
+/// - Recommended external pooler (e.g., PgBouncer) with Prisma reusing the driver pool.
+/// - Min pool size 10 / max 30 configured via env (see src/config/env.ts).
+/// - Idle timeout 10 seconds; saturated pool queues requests until Fastify backpressure rejects.
+/// - Ensure DATABASE_URL includes `connection_limit` when using PgBouncer.
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String        @map("password_hash")
+  firstName     String        @map("first_name")
+  lastName      String        @map("last_name")
+  pictureUrl    String?       @map("picture_url")
+  isActive      Boolean       @default(true) @map("is_active")
+  roles         UserRole[]
+  oauthProvider String?       @map("oauth_provider")
+  oauthSubject  String?       @map("oauth_subject")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  logs          AuditLog[]
+
+  @@index([email])
+}
+
+model Role {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  users       UserRole[]
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now()) @map("created_at")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  resource    String
+  action      String
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@unique([resource, action], name: "resource_action")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, roleId])
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String     @map("role_id")
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId String     @map("permission_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([roleId, permissionId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  level     String
+  message   String
+  meta      Json
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @default(dbgenerated("now() + interval '30 days'")) @map("expires_at")
+
+  @@index([createdAt])
+  @@index([expiresAt])
+}
