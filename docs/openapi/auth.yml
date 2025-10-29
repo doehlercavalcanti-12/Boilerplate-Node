@@ -1,0 +1,71 @@
+openapi: 3.1.0
+info:
+  title: Boilerplate Auth API
+  version: 1.0.0
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Authenticate user via email/password
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful authentication
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                description: HttpOnly JWT cookie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+      security:
+        - csrfToken: []
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 12
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        expiresIn:
+          type: integer
+        user:
+          $ref: '#/components/schemas/UserSummary'
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    csrfToken:
+      type: apiKey
+      in: header
+      name: x-csrf-token

@@ -1,0 +1,43 @@
+{
+  "info": {
+    "name": "Boilerplate Node API",
+    "_postman_id": "00000000-0000-0000-0000-000000000000",
+    "description": "Postman collection for the Fastify boilerplate.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrfToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"ChangeMe123!\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": ["// Inject CSRF token when retrieved from previous request"]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" }
+  ]
+}

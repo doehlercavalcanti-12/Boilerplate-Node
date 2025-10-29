@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type Check
+        run: npm run type-check
+      - name: Unit Tests
+        run: npm run test
+      - name: Build Docker Image
+        run: npm run docker:build
+      - name: Coverage Report
+        run: npm run coverage:report
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+      - name: Upload Lint Report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: lint-report.md
+          if-no-files-found: ignore
+      - name: Upload Security Report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.md
+          if-no-files-found: ignore
