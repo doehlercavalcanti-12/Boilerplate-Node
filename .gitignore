@@ -4,6 +4,8 @@ node_modules
 dist
 coverage
 reports
+!docs/reports/
+!docs/reports/*.md
 logs
 test-results
 .DS_Store
