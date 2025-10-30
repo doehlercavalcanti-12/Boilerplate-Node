@@ -1,4 +1,4 @@
-import { sanitizeInput, preventParameterPollution } from '../../../src/utils/sanitizer.ts';
+import { sanitizeInput, preventParameterPollution } from '../../../src/utils/sanitizer.js';
 
 describe('sanitizeInput', () => {
   it('removes script tags', () => {

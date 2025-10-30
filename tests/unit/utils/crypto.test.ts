@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword, generateRandomToken } from '../../../src/utils/crypto.ts';
+import { hashPassword, verifyPassword, generateRandomToken } from '../../../src/utils/crypto.js';
 
 describe('crypto utilities', () => {
   it('hashes and verifies passwords', async () => {

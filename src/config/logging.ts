@@ -14,13 +14,16 @@ if (!existsSync(logDirectory)) {
   mkdirSync(logDirectory, { recursive: true });
 }
 
-const stream = createStream('%Y-%m-%d.log', {
-  size: '20M',
-  interval: '1d',
-  maxFiles: retentionDays,
-  compress: 'gzip',
-  path: logDirectory
-});
+const stream =
+  env.nodeEnv !== 'test'
+    ? createStream('%Y-%m-%d.log', {
+        size: '20M',
+        interval: '1d',
+        maxFiles: retentionDays,
+        compress: 'gzip',
+        path: logDirectory
+      })
+    : undefined;
 
 const redactionPaths = [
   'req.headers.authorization',
@@ -44,7 +47,7 @@ const baseLoggerOptions: pino.LoggerOptions = {
   }
 };
 
-if (env.nodeEnv !== 'test') {
+if (env.nodeEnv !== 'test' && stream) {
   baseLoggerOptions.transport = {
     targets: [
       {
@@ -62,7 +65,7 @@ if (env.nodeEnv !== 'test') {
   };
 }
 
-export const logger = pino(baseLoggerOptions, env.nodeEnv !== 'test' ? stream : undefined);
+export const logger = pino(baseLoggerOptions, stream);
 
 export const httpLoggerOptions = {
   logger,
