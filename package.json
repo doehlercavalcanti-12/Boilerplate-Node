@@ -61,7 +61,7 @@
     "@swc/jest": "^0.2.39",
     "@types/hpp": "^0.2.7",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.9.2",
+    "@types/node": "^24.10.0",
     "@types/sanitize-html": "^2.16.0",
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
